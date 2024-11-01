@@ -31,7 +31,7 @@ const registerUser = async (req, res) => {
 
     return res.status(200).json({
         message: "User registered successfully. A verification email has been sent to your email.",
-        user:{password,...user},
+        user: user,
     });
 };
 
