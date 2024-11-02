@@ -1,5 +1,7 @@
 import { userRoleEnum } from "../constants.js";
 import { User } from "../models/userModels.js"
+import { ApiError } from "../utils/ApiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 
 
@@ -14,25 +16,28 @@ const generateAccessRefresh_token = async (userId) => {
     }
 }
 
-const registerUser = async (req, res) => {
-    const { email, username, password, role } = req.body;  //getting the user from request body
+const registerUser = asyncHandler(async (req, res) => {
+    const { email, username, password, role } = req.body;
     const userExists = await User.findOne({
         $or: [{ username }, { email }],
     }).select("_id");
+
     if (userExists) {
-        return res.status(400).json({ message: "User already exists" });
+        throw new ApiError("User already Exists", 409);
     }
+
     const user = await User.create({
         email,
         username,
         password,
-        role: role || userRoleEnum.USER
-    })
+        role: role || userRoleEnum.USER,
+    });
 
     return res.status(200).json({
         message: "User registered successfully. A verification email has been sent to your email.",
-        user: user,
+        user: user.email + "," + user.username,
     });
-};
+});
+
 
 export { registerUser };
