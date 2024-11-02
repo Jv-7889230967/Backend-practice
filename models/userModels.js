@@ -31,13 +31,17 @@ const userSchema = new Schema({   //schema format for userDetails
     },
     password: {
         type: String,
-        required: [true, "password is mandatory"]
+        required: [true, "password is mandatory"],
+        select:false
     },
     role: {
         type: String,
         enum: Object.values(userRoleEnum),
         default: userRoleEnum.USER,
         required: true
+    },
+    refreshtoken:{
+        type:String,
     }
 }, { timestamps: true })
 
