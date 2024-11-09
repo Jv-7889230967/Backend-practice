@@ -23,6 +23,10 @@ const userSchema = new Schema({   //schema format for userDetails
         trim: true,
         index: true,
     },
+    phonenumber: {
+        type: Number,
+        required: true
+    },
     email: {
         type: String,
         required: true,
@@ -32,7 +36,7 @@ const userSchema = new Schema({   //schema format for userDetails
     password: {
         type: String,
         required: [true, "password is mandatory"],
-        select:false
+        select: false
     },
     role: {
         type: String,
@@ -40,8 +44,8 @@ const userSchema = new Schema({   //schema format for userDetails
         default: userRoleEnum.USER,
         required: true
     },
-    refreshtoken:{
-        type:String,
+    refreshtoken: {
+        type: String,
     }
 }, { timestamps: true })
 
@@ -61,21 +65,21 @@ userSchema.methods.generateAccess_token = function () {   //method to generate t
         _id: this._id,
         email: this.email,
         username: this.username,
-        role: this.role,    
+        role: this.role,
     },
-    process.env.JWT_ACCESS_TOKEN_SECRET,
-    {
-        expiresIn:'1d'
-    })
+        process.env.JWT_ACCESS_TOKEN_SECRET,
+        {
+            expiresIn: '1d'
+        })
 }
 
 userSchema.methods.generateRefresh_token = function () {   //method to generate refresh token using jwt
     return jwt.sign({
-        _id: this._id    
+        _id: this._id
     },
-    process.env.JWT_REFRESH_TOKEN_SECRET,
-    {
-        expiresIn:'1d'
-    })
+        process.env.JWT_REFRESH_TOKEN_SECRET,
+        {
+            expiresIn: '1d'
+        })
 }
 export const User = mongoose.model("User", userSchema);
